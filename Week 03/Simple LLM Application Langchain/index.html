@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Translator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>🌍 AI Translator</h1>
+            <textarea id="text" placeholder="Enter text to translate..."></textarea>
+            <select id="language">
+                <option value="French">French</option>
+                <option value="Spanish">Spanish</option>
+                <option value="German">German</option>
+                <option value="Urdu">Urdu</option>
+            </select>
+            <button onclick="translateText()">Translate</button>
+            <div id="loading" class="loading">Translating...</div>
+            <div id="output" class="output"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+<script>
+    async function translateText() {
+        const text = document.getElementById("text").value;
+        const language = document.getElementById("language").value;
+        const outputDiv = document.getElementById("output");
+
+        if (!text) {
+            outputDiv.innerHTML = "Please enter text to translate.";
+            return;
+        }
+
+        const response = await fetch("http://localhost:8000/chain/invoke", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                input: {
+                    text: document.getElementById("text").value,
+                    language: document.getElementById("language").value
+                }
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("output").innerText = data.output;
+            })
+            .catch(error => console.error("Error:", error));
+
+    }
+</script>
+</body>
+
+</html>
